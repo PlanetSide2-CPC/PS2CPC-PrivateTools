@@ -8,7 +8,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -33,12 +32,15 @@ public class PlanetSide2DatFileInfoParser {
                 String[] result = line.split("\t");
 
                 String newLine = line;
+
+
+                //这里是在判断这个文件是不是带3个字节的BOm头的，如果带，第一个字符串因为含有\uFEFF或\uFFFE，会无法解析成数字
                 if (isFirst) {
                     try {
-                        Long checkBOMExist = Long.parseLong(result[0]);
+                        Long.parseLong(result[0]);
                     } catch (NumberFormatException e) {
                         byte[] bytes = result[0].getBytes("UTF-8");
-
+                        //  移除bom头，从而保证第一个key正常
                         String str = new String(bytes, 3, bytes.length - 3);
                         result[0] = str;
 
@@ -119,7 +121,7 @@ public class PlanetSide2DatFileInfoParser {
                 } else {
 
                     //如果真到了这里，那就是db又在文本里干逆天但事儿了
-                   throw new RuntimeException("What the fuck???????")；
+                   throw new RuntimeException("What the fuck???????");
                 }
 
 
